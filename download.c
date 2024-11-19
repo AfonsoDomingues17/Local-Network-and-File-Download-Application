@@ -30,8 +30,8 @@ struct parameters {
     char ip[40]; // ipv4: 16; ipv6: 40.
     char host[PARAM_SIZE];
     char path[PARAM_SIZE];
-    char * file;
-    // char file[PARAM_SIZE];
+    //char * file;
+    char file[PARAM_SIZE];
 };
 //TODO::defines da porta e das respostas
 
@@ -66,7 +66,8 @@ int parseURL(char *input, struct parameters *param){
 
     strncpy(param->path,slash+1,PARAM_SIZE); //extract the path
 
-    param->file = strrchr(param->path, '/') + 1; //extract the file
+    char *last_slash = strrchr(input, '/'); //extract the file
+    strncpy(param->file,last_slash+1,PARAM_SIZE);
 
     if ((h = gethostbyname(param->host)) == NULL) {
         printf("Invalid hostname '%s'\n", param->host);
