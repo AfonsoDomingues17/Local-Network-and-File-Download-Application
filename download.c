@@ -30,8 +30,9 @@ struct parameters {
     char ip[40]; // ipv4: 16; ipv6: 40.
     char host[PARAM_SIZE];
     char path[PARAM_SIZE];
-    //char * file;
-    char file[PARAM_SIZE];
+    // char file[PARAM_SIZE];
+    // char * file;
+    unsigned file;
 };
 //TODO::defines da porta e das respostas
 
@@ -66,8 +67,11 @@ int parseURL(char *input, struct parameters *param){
 
     strncpy(param->path,slash+1,PARAM_SIZE); //extract the path
 
-    char *last_slash = strrchr(input, '/'); //extract the file
-    strncpy(param->file,last_slash+1,PARAM_SIZE);
+    char * p = strrchr(param->path, '/');
+    param->file = p - param->path + 1;
+    if (p == NULL) param->file = 0;
+/*     char *last_slash = strrchr(input, '/'); //extract the file
+    strncpy(param->file,last_slash+1,PARAM_SIZE); */
 
     if ((h = gethostbyname(param->host)) == NULL) {
         printf("Invalid hostname '%s'\n", param->host);
@@ -103,15 +107,19 @@ int openSocket(char *IP,int port){
     return sockfd;
 }
 
-int readAnswer(int sockfd, char *answer){
-    char code[4] = {0};
+/**
+ * @brief Reads answer of the socket.
+ * 
+ * @param sockfd Socket file descriptor.
+ * @param answer Buffer to store answer.
+ * @param size Answer buffer size.
+ * @return int - Returns the code of the answer if successful and -1 otherwise.
+ */
+int readAnswer(int sockfd, char *answer, unsigned size){
+    int ret = -1;
     read(sockfd, answer, 1024 - 1);
-    strncpy(code, answer, 3);
-    int ret = atoi(code);
-    
-    printf(answer);
-    //while (read(sockfd, asw, 1024 - 1) > 0) printf(asw);
-
+    sscanf(answer, "%d", &ret);
+    printf("%s", answer);
     return ret;
 }
 
@@ -125,16 +133,20 @@ int main(int argc, char **argv) {
         printf("How to call: ftp://[<user>:<password>@]<host>/<url-path>\n");
         exit(1);
     }
-    printf("V1:%s\n",param.user);
-    printf("V1:%s\n",param.password);
-    printf("V1:%s\n",param.file);
-    printf("V1:%s\n",param.host);
-    printf("V1:%s\n",param.ip);
-    printf("V1:%s\n",param.path);
+    printf("user:   %s\n",param.user);
+    printf("pw:     %s\n",param.password);
+    printf("file i: %d\n",param.file);
+    printf("file:   %s\n",param.path + param.file);
+    printf("host:   %s\n",param.host);
+    printf("ip:     %s\n",param.ip);
+    printf("path:   %s\n",param.path);
 
-    char answer[1024] = {0}; // answer == &answer[0]
+    char answer[1024] = {0};
     int socket_A = openSocket(param.ip,FTP_PORT);
-    int code = readAnswer(socket_A, answer);
+    int code = readAnswer(socket_A, answer, 1024);
+
+/*     memset(answer, 0, 1024);
+    readAnswer(socket_A,answer, 1024); */
     if(code != WELCOME_AN){
         printf("Error: Wrong answer received, supposed to be welcome!\n");
         exit(1);
@@ -147,7 +159,7 @@ int main(int argc, char **argv) {
    
     write(socket_A,cmd,strlen(cmd));
     memset(answer, 0, 1024);
-    code = readAnswer(socket_A,answer);
+    code = readAnswer(socket_A,answer, 1024);
     if(code != PASSWORD_ANS){
         printf("Error: Wrong answer received, supposed to request password!\n");
         exit(1);
@@ -159,7 +171,7 @@ int main(int argc, char **argv) {
 
     write(socket_A, cmd, strlen(cmd));
     memset(answer, 0, 1024);
-    code = readAnswer(socket_A,answer);
+    code = readAnswer(socket_A,answer, 1024);
     if(code != LOGIN_ANS){
         printf("Error: Wrong answer received, supposed to be login!\n");
         exit(1);
@@ -167,7 +179,7 @@ int main(int argc, char **argv) {
 
     write(socket_A,"pasv\n",5);
     memset(answer, 0, 1024);
-    code = readAnswer(socket_A,answer);
+    code = readAnswer(socket_A,answer, 1024);
     if(code != PASV_ANS){
         printf("Error: Wrong answer received, supposed to be pasv info!\n");
         exit(1);
@@ -189,13 +201,13 @@ int main(int argc, char **argv) {
 
     write(socket_A, cmd, strlen(cmd));
     memset(answer, 0, 1024);
-    code = readAnswer(socket_A,answer);
+    code = readAnswer(socket_A,answer, 1024);
     if(code != OPEN_BINARY_ANS){
         printf("Error: Wrong answer received, supposed to be login!\n");
         exit(1);
     }
     
-    FILE *file = fopen(param.file,"w");
+    FILE *file = fopen(param.path + param.file,"w");
     if(file == NULL){
         printf("Error, Could not open the file\n");
         exit(1);
@@ -210,14 +222,14 @@ int main(int argc, char **argv) {
     }
     fclose(file);
     memset(answer, 0, 1024);
-    code = readAnswer(socket_A,answer);
+    code = readAnswer(socket_A,answer, 1024);
     if(code != TRANSFER_COMP_ANS){
         printf("Error: Wrong answer received, supposed to be transfer completed!\n");
         exit(1);
     }
     write(socket_A,"quit\n",5);
     memset(answer, 0, 1024);
-    code = readAnswer(socket_A,answer);
+    code = readAnswer(socket_A,answer, 1024);
     if(code != QUIT_ANS){
         printf("Error: Wrong answer received, supposed to be transfer completed!\n");
         exit(1);
