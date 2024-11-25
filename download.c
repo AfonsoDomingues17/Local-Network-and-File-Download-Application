@@ -5,6 +5,7 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #include <string.h>
 
@@ -98,6 +99,8 @@ int openSocket(char *IP,int port){
         perror("socket()");
         exit(-1);
     }
+
+
     /*connect to the server*/
     if (connect(sockfd, (struct sockaddr *) &server_addr,sizeof(server_addr)) < 0) {
         perror("connect()");
@@ -117,9 +120,28 @@ int openSocket(char *IP,int port){
  */
 int readAnswer(int sockfd, char *answer, unsigned size){
     int ret = -1;
-    read(sockfd, answer, 1024 - 1);
+    char byte;
+    int i = 0;
+
+    while (read(sockfd, &byte, 1) > 0) {
+        if (i < size - 1) {
+            answer[i] = byte;
+            i++;
+        }
+        if (byte == '\n') {
+            answer[i] = '\0';
+            printf("A: %s", answer);
+            if ( // If last line, break
+                (answer[0] >= '0' && answer[0] <= '9') &&
+                (answer[1] >= '0' && answer[1] <= '9') &&
+                (answer[2] >= '0' && answer[2] <= '9') &&
+                answer[3] == ' '
+            ) {break;}
+            i = 0;
+        }
+    }    
     sscanf(answer, "%d", &ret);
-    printf("%s", answer);
+
     return ret;
 }
 
@@ -145,9 +167,8 @@ int main(int argc, char **argv) {
     int socket_A = openSocket(param.ip,FTP_PORT);
     int code = readAnswer(socket_A, answer, 1024);
 
-/*     memset(answer, 0, 1024);
-    readAnswer(socket_A,answer, 1024); */
     if(code != WELCOME_AN){
+        printf("code=%d\n", code);
         printf("Error: Wrong answer received, supposed to be welcome!\n");
         exit(1);
     }
@@ -158,9 +179,11 @@ int main(int argc, char **argv) {
     strcat(cmd, "\n");
    
     write(socket_A,cmd,strlen(cmd));
+    printf("cmd: %s", cmd);
     memset(answer, 0, 1024);
     code = readAnswer(socket_A,answer, 1024);
     if(code != PASSWORD_ANS){
+        printf("code:%d\n",code);
         printf("Error: Wrong answer received, supposed to request password!\n");
         exit(1);
     }
@@ -170,14 +193,16 @@ int main(int argc, char **argv) {
     strcat(cmd, "\n");
 
     write(socket_A, cmd, strlen(cmd));
+    printf("cmd: %s", cmd);
     memset(answer, 0, 1024);
     code = readAnswer(socket_A,answer, 1024);
     if(code != LOGIN_ANS){
         printf("Error: Wrong answer received, supposed to be login!\n");
         exit(1);
     }
-
+    
     write(socket_A,"pasv\n",5);
+    printf("cmd: %s", cmd);
     memset(answer, 0, 1024);
     code = readAnswer(socket_A,answer, 1024);
     if(code != PASV_ANS){
@@ -200,6 +225,7 @@ int main(int argc, char **argv) {
     strcat(cmd, "\n");
 
     write(socket_A, cmd, strlen(cmd));
+    printf("cmd: %s", cmd);
     memset(answer, 0, 1024);
     code = readAnswer(socket_A,answer, 1024);
     if(code != OPEN_BINARY_ANS){
