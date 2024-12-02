@@ -173,10 +173,10 @@ int main(int argc, char **argv) {
         exit(1);
     }
     
-    char cmd[5 + PARAM_SIZE];
+    char cmd[6 + PARAM_SIZE] = {0};
     strcpy(cmd, "user ");
     strcat(cmd, param.user);
-    strcat(cmd, "\n");
+    strcat(cmd, "\r\n");
    
     write(socket_A,cmd,strlen(cmd));
     printf("cmd: %s", cmd);
@@ -190,7 +190,7 @@ int main(int argc, char **argv) {
     
     strcpy(cmd, "pass ");
     strcat(cmd, param.password);
-    strcat(cmd, "\n");
+    strcat(cmd, "\r\n");
 
     write(socket_A, cmd, strlen(cmd));
     printf("cmd: %s", cmd);
@@ -222,7 +222,7 @@ int main(int argc, char **argv) {
     
     strcpy(cmd, "retr ");
     strcat(cmd, param.path);
-    strcat(cmd, "\n");
+    strcat(cmd, "\r\n");
 
     write(socket_A, cmd, strlen(cmd));
     printf("cmd: %s", cmd);
