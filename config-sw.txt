@@ -1,0 +1,38 @@
+# Username: admin
+# Password: (blank)
+
+/system reset-configuration
+    y
+
+##### Exp2:
+
+# Remove ports from default bridge:
+# Remove ether2:
+/interface bridge port remove 
+    1
+# Remove ether3:
+/interface bridge port remove 
+    1
+# Remove ether4:
+/interface bridge port remove 
+    1
+
+# Create bridges:
+/interface bridge add name=bridge30
+/interface bridge add name=bridge31
+
+# Add ports to bridges:
+# Assume TUX32, TUX33, and TUX34 are connected to ports ether2, ether3 and ether4, respectively.
+/interface bridge port add bridge=bridge30 interface=ether3
+/interface bridge port add bridge=bridge30 interface=ether4
+/interface bridge port add bridge=bridge31 interface=ether2
+
+##### Exp3:
+# Nothing to do
+
+##### Exp4:
+# TODO: Is it here that we configure the router?
+# TODO: Add the router to bridge31
+# Assume the router is connected to ether10 of switch.
+/ip address add address=172.16.31.254/24 interface=ether10
+# TODO
