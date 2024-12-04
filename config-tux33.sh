@@ -18,7 +18,7 @@ ifconfig eth1 172.16.30.1/24
 # ping -b 172.16.30.255 # Ping broadcast
 
 # Exp3:
-route add -net 172.16.30.1/24 gw 172.16.30.254
+route add -net 172.16.31.0/24 gw 172.16.30.254
 # route -n # Observe routes
 # Start Wrireshark on eth1.
 # ping 172.16.30.254 # Ping and verify connectivity
