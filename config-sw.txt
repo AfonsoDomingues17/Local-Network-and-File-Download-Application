@@ -29,10 +29,13 @@
 
 ##### Exp3:
 # Nothing to do
+/interface bridge port remove 
+    6
+/interface bridge port add bridge=bridge31 interface=ether10
 
 ##### Exp4:
-# TODO: Is it here that we configure the router?
-# TODO: Add the router to bridge31
-# Assume the router is connected to ether10 of switch.
-/ip address add address=172.16.31.254/24 interface=ether10
+/interface bridge port remove 
+    6 # ether15
+# Assume the router is connected to ether15 of switch.
+/interface bridge port add bridge=bridge31 interface=ether15
 # TODO

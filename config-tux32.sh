@@ -7,7 +7,7 @@ ifconfig eth1 172.16.31.1/24
 # ping -b 172.16.31.255 # Ping broadcast
 
 # Exp3:
-route add -net 172.16.31.1/24 gw 172.16.31.253
+route add -net 172.16.30.0/24 gw 172.16.31.253
 # route -n # Observe routes
 # arp -d 172.16.31.253 # Delete entry for TUX34 (not mandatory for configuration)
 

@@ -7,7 +7,6 @@ ifconfig eth1 172.16.30.254/24
 # route -n # Inspect Forwarding
 # arp -a # Inspect ARP tables
 
-
 # Exp3:
 ifconfig eth2 up
 ifconfig eth2 172.16.31.253/24
