@@ -30,4 +30,6 @@ route add -net 172.16.31.0/24 gw 172.16.30.254
 
 # Exp4:
 # route -n # Verify the default route (0.0.0.0) is TUX34
+# If there is an existing default router, delete it: route del ...
+route add default gw 172.16.30.254
 # TODO

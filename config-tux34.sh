@@ -20,4 +20,6 @@ sysctl net.ipv4.icmp_echo_ignore_broadcasts=0
 
 # Exp4:
 # route -n # Verify the default route (0.0.0.0) is ROUTER (172.16.31.254)
+# If there is an existing default router, delete it: route del ...
+route add default gw 172.16.31.254
 # TODO

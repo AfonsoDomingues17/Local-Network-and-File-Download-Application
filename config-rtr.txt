@@ -1,0 +1,11 @@
+# Username: admin
+# Password: (blank)
+
+/system reset-configuration
+    y
+
+##### Exp4:
+/ip address add address=172.16.1.31/24 interface=ether1
+/ip address add address=172.16.31.254/24 interface=ether2
+
+/ip route add dst-address=172.16.30.0/24 gateway=172.16.31.253
