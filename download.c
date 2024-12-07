@@ -19,6 +19,7 @@
 #define LOGIN_ANS 230
 #define PASV_ANS 227
 #define OPEN_BINARY_ANS 150
+#define OPEN_BINARY_ANS2 125
 #define TRANSFER_COMP_ANS 226
 #define QUIT_ANS 221
 
@@ -122,7 +123,6 @@ int readAnswer(int sockfd, char *answer, unsigned size){
     int ret = -1;
     char byte;
     int i = 0;
-
     while (read(sockfd, &byte, 1) > 0) {
         if (i < size - 1) {
             answer[i] = byte;
@@ -195,16 +195,20 @@ int main(int argc, char **argv) {
     write(socket_A, cmd, strlen(cmd));
     printf("cmd: %s", cmd);
     memset(answer, 0, 1024);
+
     code = readAnswer(socket_A,answer, 1024);
     if(code != LOGIN_ANS){
         printf("Error: Wrong answer received, supposed to be login!\n");
         exit(1);
     }
-    
-    write(socket_A,"pasv\n",5);
+    strcpy(cmd, "pasv\r\n");
+
+    write(socket_A,cmd,6);
     printf("cmd: %s", cmd);
     memset(answer, 0, 1024);
+
     code = readAnswer(socket_A,answer, 1024);
+
     if(code != PASV_ANS){
         printf("Error: Wrong answer received, supposed to be pasv info!\n");
         exit(1);
@@ -228,7 +232,8 @@ int main(int argc, char **argv) {
     printf("cmd: %s", cmd);
     memset(answer, 0, 1024);
     code = readAnswer(socket_A,answer, 1024);
-    if(code != OPEN_BINARY_ANS){
+    printf("code:%d\n",code);
+    if(code != OPEN_BINARY_ANS && code != OPEN_BINARY_ANS2){
         printf("Error: Wrong answer received, supposed to be login!\n");
         exit(1);
     }
@@ -242,20 +247,32 @@ int main(int argc, char **argv) {
     char temp[1024];
 
     while(1){
-        n_bytes = read(socket_B,temp,1024 - 1);
+        n_bytes = read(socket_B,temp,1024);
         fwrite(temp,1, n_bytes, file);
         if(n_bytes <= 0) break;
     }
     fclose(file);
+    if(close(socket_B) != 0) {
+        printf("Error: Could not close socket B");
+        exit(1);
+    }
+
     memset(answer, 0, 1024);
+
     code = readAnswer(socket_A,answer, 1024);
+
     if(code != TRANSFER_COMP_ANS){
         printf("Error: Wrong answer received, supposed to be transfer completed!\n");
         exit(1);
     }
-    write(socket_A,"quit\n",5);
+    strcpy(cmd, "quit\r\n");
+    write(socket_A,cmd,6);
+
+    printf("cmd: %s", cmd);
+
     memset(answer, 0, 1024);
     code = readAnswer(socket_A,answer, 1024);
+    printf("code:%d\n",code);
     if(code != QUIT_ANS){
         printf("Error: Wrong answer received, supposed to be transfer completed!\n");
         exit(1);
@@ -265,9 +282,6 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    if(close(socket_B) != 0) {
-        printf("Error: Could not close socket B");
-        exit(1);
-    }
+   
     return 0;
 }
