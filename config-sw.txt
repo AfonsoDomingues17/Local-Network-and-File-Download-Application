@@ -18,24 +18,24 @@
     1
 
 # Create bridges:
-/interface bridge add name=bridge30
-/interface bridge add name=bridge31
+/interface bridge add name=bridge50
+/interface bridge add name=bridge51
 
 # Add ports to bridges:
-# Assume TUX32, TUX33, and TUX34 are connected to ports ether2, ether3 and ether4, respectively.
-/interface bridge port add bridge=bridge30 interface=ether3
-/interface bridge port add bridge=bridge30 interface=ether4
-/interface bridge port add bridge=bridge31 interface=ether2
+# Assume TUX52, TUX53, and TUX54 are connected to ports ether2, ether3 and ether4, respectively.
+/interface bridge port add bridge=bridge50 interface=ether3
+/interface bridge port add bridge=bridge50 interface=ether4
+/interface bridge port add bridge=bridge51 interface=ether2
 
 ##### Exp3:
 # Nothing to do
 /interface bridge port remove 
     6
-/interface bridge port add bridge=bridge31 interface=ether10
+/interface bridge port add bridge=bridge51 interface=ether10
 
 ##### Exp4:
 /interface bridge port remove 
-    6 # ether15
+    10 # ether15
 # Assume the router is connected to ether15 of switch.
-/interface bridge port add bridge=bridge31 interface=ether15
+/interface bridge port add bridge=bridge51 interface=ether15
 # TODO
