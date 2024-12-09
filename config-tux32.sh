@@ -2,17 +2,31 @@ systemctl restart networking
 
 # Exp2:
 ifconfig eth1 up
-ifconfig eth1 172.16.31.1/24
-# Start Wrireshark on eth1. Also start it on eth1 of TUX32 and TUX34
-# ping -b 172.16.31.255 # Ping broadcast
+ifconfig eth1 172.16.51.1/24
+# Start Wrireshark on eth1. Also start it on eth1 of TUX52 and TUX54
+# ping -b 172.16.51.255 # Ping broadcast
 
 # Exp3:
-route add -net 172.16.30.0/24 gw 172.16.31.253
+route add -net 172.16.50.0/24 gw 172.16.51.253
 # route -n # Observe routes
-# arp -d 172.16.31.253 # Delete entry for TUX34 (not mandatory for configuration)
+# arp -d 172.16.51.253 # Delete entry for TUX54 (not mandatory for configuration)
 
 # Exp4:
-# route -n # Verify the default route (0.0.0.0) is ROUTER (172.16.31.254)
-# If there is an existing default router, delete it: route del ...
-route add default gw 172.16.31.254
-# TODO
+route add -net 172.16.1.0/24 gw 172.16.71.254
+sysctl net.ipv4.conf.eth1.accept_redirects=0
+sysctl net.ipv4.conf.all.accept_redirects=0
+
+#route del -net 172.16.50.0/24 gw 172.16.51.253
+#route add -net 172.16.50.0/24 gw 172.16.51.254
+#traceroute 172.16.50.1
+#route del -net 172.16.50.0/24 gw 172.16.51.254
+#route add -net 172.16.50.0/24 gw 172.16.51.253
+#traceroute 172.16.50.1
+#sysctl net.ipv4.conf.eth1.accept_redirects=1
+#sysctl net.ipv4.conf.all.accept_redirects=1
+
+
+# Exp5:
+echo domain netlab.fe.up.pt > /etc/resolv.conf
+echo search netlab.fe.up.pt >> /etc/resolv.conf
+echo nameserver 10.227.20.3 >> /etc/resolv.conf
