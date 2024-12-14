@@ -234,7 +234,7 @@ int main(int argc, char **argv) {
     code = readAnswer(socket_A,answer, 1024);
     printf("code:%d\n",code);
     if(code != OPEN_BINARY_ANS && code != OPEN_BINARY_ANS2){
-        printf("Error: Wrong answer received, supposed to be login!\n");
+        printf("Error: Wrong answer received. File probably does not exist.\n");
         exit(1);
     }
     
