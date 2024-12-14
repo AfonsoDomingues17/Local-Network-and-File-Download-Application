@@ -27,6 +27,6 @@ sysctl net.ipv4.conf.all.accept_redirects=0
 
 
 # Exp5:
-echo domain netlab.fe.up.pt > /etc/resolv.conf
-echo search netlab.fe.up.pt >> /etc/resolv.conf
+# echo domain netlab.fe.up.pt > /etc/resolv.conf
+# echo search netlab.fe.up.pt >> /etc/resolv.conf
 echo nameserver 10.227.20.3 >> /etc/resolv.conf
