@@ -36,6 +36,6 @@ route add -net 172.16.1.0/24 gw 172.16.50.254
 
 
 # Exp5:
-echo domain netlab.fe.up.pt > /etc/resolv.conf
-echo search netlab.fe.up.pt >> /etc/resolv.conf
+# echo domain netlab.fe.up.pt > /etc/resolv.conf
+# echo search netlab.fe.up.pt >> /etc/resolv.conf
 echo nameserver 10.227.20.3 >> /etc/resolv.conf
