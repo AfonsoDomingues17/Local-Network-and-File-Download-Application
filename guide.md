@@ -184,6 +184,43 @@ route add -net 172.16.1.0/24 gw 172.16.Y1.254
 
 Add route to bridgeY0:
 ```
-/ip route add dst-address=172.16.50.0/24 gateway=172.16.51.253
+/ip route add dst-address=172.16.Y0.0/24 gateway=172.16.Y1.253
 ```
+
+## Exp 5
+
+### tuxY2
+
+Configure the DNS (with ip address of 10.225.20.3):
+```bash
+echo nameserver 10.227.20.3 >> /etc/resolv.conf
+```
+
+### tuxY3
+
+Configure the DNS (with ip address of 10.225.20.3):
+```bash
+echo nameserver 10.227.20.3 >> /etc/resolv.conf
+```
+
+### tuxY4
+
+Configure the DNS (with ip address of 10.225.20.3):
+```bash
+echo nameserver 10.227.20.3 >> /etc/resolv.conf
+```
+
+## Exp 6
+
+Compile the download application:
+```bash
+gcc download.c -o download
+```
+
+Run the download application:
+```bash
+./download <URL>
+```
+
+This URL is in the format ftp://[\<user>:\<password>@]\<host>/\<url-path>
 
