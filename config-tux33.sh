@@ -31,10 +31,6 @@ route add -net 172.16.51.0/24 gw 172.16.50.254
 # Exp4:
 route add -net 172.16.1.0/24 gw 172.16.50.254
 
-# TODO
-
-
-
 # Exp5:
 # echo domain netlab.fe.up.pt > /etc/resolv.conf
 # echo search netlab.fe.up.pt >> /etc/resolv.conf
