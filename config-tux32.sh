@@ -12,9 +12,9 @@ route add -net 172.16.50.0/24 gw 172.16.51.253
 # arp -d 172.16.51.253 # Delete entry for TUX54 (not mandatory for configuration)
 
 # Exp4:
-route add -net 172.16.1.0/24 gw 172.16.71.254
-sysctl net.ipv4.conf.eth1.accept_redirects=0
-sysctl net.ipv4.conf.all.accept_redirects=0
+route add -net 172.16.1.0/24 gw 172.16.51.254
+# sysctl net.ipv4.conf.eth1.accept_redirects=0
+# sysctl net.ipv4.conf.all.accept_redirects=0
 
 #route del -net 172.16.50.0/24 gw 172.16.51.253
 #route add -net 172.16.50.0/24 gw 172.16.51.254
