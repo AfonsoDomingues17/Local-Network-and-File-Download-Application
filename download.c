@@ -25,18 +25,14 @@
 
 #define PARAM_SIZE 512
 
-//TODO::struct with all the parametters of the URL
 struct parameters {
     char user[PARAM_SIZE];
     char password[PARAM_SIZE];
     char ip[40]; // ipv4: 16; ipv6: 40.
     char host[PARAM_SIZE];
     char path[PARAM_SIZE];
-    // char file[PARAM_SIZE];
-    // char * file;
     unsigned file;
 };
-//TODO::defines da porta e das respostas
 
 int parseURL(char *input, struct parameters *param){
 
@@ -72,8 +68,6 @@ int parseURL(char *input, struct parameters *param){
     char * p = strrchr(param->path, '/');
     param->file = p - param->path + 1;
     if (p == NULL) param->file = 0;
-/*     char *last_slash = strrchr(input, '/'); //extract the file
-    strncpy(param->file,last_slash+1,PARAM_SIZE); */
 
     if ((h = gethostbyname(param->host)) == NULL) {
         printf("Invalid hostname '%s'\n", param->host);
@@ -282,6 +276,5 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-   
     return 0;
 }
