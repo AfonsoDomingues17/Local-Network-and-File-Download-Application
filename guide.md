@@ -47,17 +47,17 @@ Remove ports from default bridge:
 Ether2:
 ```
 /interface bridge port print
-/interface bridge port remove
+/interface bridge port remove [find interface=ether2]
 ```
 Ether3:
 ```
 /interface bridge port print
-/interface bridge port remove
+/interface bridge port remove [find interface=ether3]
 ```
 Ether4:
 ```
 /interface bridge port print
-/interface bridge port remove
+/interface bridge port remove [find interface=ether4]
 ```
 
 Create bridges **bridgeY0** and **bridgeY1**:
@@ -99,7 +99,7 @@ sysctl net.ipv4.icmp_echo_ignore_broadcasts=0
 Assuming eth2 interface of tuxY4 is connected to the switch on ether10.
 Remove ether10 from default bridge:
 ```
-/interface bridge port remove 
+/interface bridge port remove [find interface=ether10]
 ```
 
 Add eth2 of tuxY4 to bridgeY1:
@@ -133,7 +133,7 @@ Connect ether2 of RC to the switch (ether15).
 Assuming ether2 of Rc is connected to the switch on ether15.
 Remove ether15 from default bridge:
 ```
-/interface bridge port remove 
+/interface bridge port remove [find interface=ether15]
 ```
 
 Add ether2 of Rc to bridgeY1:
