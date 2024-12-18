@@ -114,14 +114,14 @@ Add eth2 of tuxY4 to bridgeY1:
 
 ### tuxY2
 
-Add route to subnetwork Y0 via eth2 of tuxY4:
+Add route to subnetwork 172.16.Y0.0 via eth2 of tuxY4:
 ```bash
 route add -net 172.16.Y0.0/24 gw 172.16.Y1.253
 ```
 
 ### tuxY3
 
-Add route to subnetwork Y1 via eth1 of tuxY4:
+Add route to subnetwork 172.16.Y1.0 via eth1 of tuxY4:
 ```bash
 route add -net 172.16.Y1.0/24 gw 172.16.Y0.254
 ```
@@ -157,7 +157,7 @@ Configure IP addresses of Rc:
 
 ### tuxY3
 
-Route to subnetwork Y1 is already configured in Exp 3.
+Route to subnetwork 172.16.Y1.0 is already configured in Exp 3.
 
 Add route to 172.16.1.0/24:
 ```bash
@@ -173,7 +173,7 @@ route add -net 172.16.1.0/24 gw 172.16.Y1.254
 
 ### tuxY2
 
-Route to subnetwork Y1 is already configured in Exp 3.
+Route to subnetwork 172.16.Y0.0 is already configured in Exp 3.
 
 Add route to 172.16.1.0/24:
 ```bash
