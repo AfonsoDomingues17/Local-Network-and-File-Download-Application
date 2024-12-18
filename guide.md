@@ -9,7 +9,6 @@ systemctl restart networking
 Restart the **switch** and the **router**:
 ```
 /system reset-configuration
-    y
 ``` 
 
 The user is **admin** and the password is blank.
@@ -49,19 +48,16 @@ Ether2:
 ```
 /interface bridge port print
 /interface bridge port remove
-    1
 ```
 Ether3:
 ```
 /interface bridge port print
 /interface bridge port remove
-    1
 ```
 Ether4:
 ```
 /interface bridge port print
 /interface bridge port remove
-    1
 ```
 
 Create bridges **bridgeY0** and **bridgeY1**:
@@ -104,7 +100,6 @@ Assuming eth2 interface of tuxY4 is connected to the switch on ether10.
 Remove ether10 from default bridge:
 ```
 /interface bridge port remove 
-    6
 ```
 
 Add eth2 of tuxY4 to bridgeY1:
@@ -139,7 +134,6 @@ Assuming ether2 of Rc is connected to the switch on ether15.
 Remove ether15 from default bridge:
 ```
 /interface bridge port remove 
-    10
 ```
 
 Add ether2 of Rc to bridgeY1:
