@@ -62,15 +62,15 @@ Ether4:
 
 Create bridges **bridgeY0** and **bridgeY1**:
 ```
-/interface bridge add name=bridge50
-/interface bridge add name=bridge51
+/interface bridge add name=bridgeY0
+/interface bridge add name=bridgeY1
 ```
 
 Assuming tuxY2, tuxY3, and tuxY4 are connected to ports ether2, ether3 and ether4, respectively. Add ports to bridges:
 ```
-/interface bridge port add bridge=bridge50 interface=ether3
-/interface bridge port add bridge=bridge50 interface=ether4
-/interface bridge port add bridge=bridge51 interface=ether2
+/interface bridge port add bridge=bridgeY0 interface=ether3
+/interface bridge port add bridge=bridgeY0 interface=ether4
+/interface bridge port add bridge=bridgeY1 interface=ether2
 ```
 
 ## Exp 3
@@ -104,19 +104,19 @@ Remove ether10 from default bridge:
 
 Add eth2 of tuxY4 to bridgeY1:
 ```
-/interface bridge port add bridge=bridge51 interface=ether10
+/interface bridge port add bridge=bridgeY1 interface=ether10
 ```
 
 ### tuxY2
 
-Add route to subnetwork 172.16.Y0.0 via eth2 of tuxY4:
+Add route to subnetwork 172.16.Y0.0/24 via eth2 of tuxY4:
 ```bash
 route add -net 172.16.Y0.0/24 gw 172.16.Y1.253
 ```
 
 ### tuxY3
 
-Add route to subnetwork 172.16.Y1.0 via eth1 of tuxY4:
+Add route to subnetwork 172.16.Y1.0/24 via eth1 of tuxY4:
 ```bash
 route add -net 172.16.Y1.0/24 gw 172.16.Y0.254
 ```
@@ -138,7 +138,7 @@ Remove ether15 from default bridge:
 
 Add ether2 of Rc to bridgeY1:
 ```
-/interface bridge port add bridge=bridge51 interface=ether15
+/interface bridge port add bridge=bridgeY1 interface=ether15
 ```
 
 ### Router
@@ -151,7 +151,7 @@ Configure IP addresses of Rc:
 
 ### tuxY3
 
-Route to subnetwork 172.16.Y1.0 is already configured in Exp 3.
+Route to subnetwork 172.16.Y1.0/24 is already configured in Exp 3.
 
 Add route to 172.16.1.0/24:
 ```bash
@@ -167,7 +167,7 @@ route add -net 172.16.1.0/24 gw 172.16.Y1.254
 
 ### tuxY2
 
-Route to subnetwork 172.16.Y0.0 is already configured in Exp 3.
+Route to subnetwork 172.16.Y0.0/24 is already configured in Exp 3.
 
 Add route to 172.16.1.0/24:
 ```bash
@@ -176,7 +176,7 @@ route add -net 172.16.1.0/24 gw 172.16.Y1.254
 
 ### Router
 
-Add route to bridgeY0:
+Add route to 172.16.Y0.0/24:
 ```
 /ip route add dst-address=172.16.Y0.0/24 gateway=172.16.Y1.253
 ```
