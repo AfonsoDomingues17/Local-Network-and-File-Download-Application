@@ -1,4 +1,4 @@
-# Guide for Lab 2 Network Configuration
+# Configuration Commands
 
 ## Beginning
 Restart networking in all the tuxes:
