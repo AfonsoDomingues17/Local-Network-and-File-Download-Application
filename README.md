@@ -1,93 +1,220 @@
-# RCOM Lab2 - Network
+# Configuration Commands
 
-
-
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://gitlab.up.pt/up202208319/rcom-lab2-network.git
-git branch -M main
-git push -uf origin main
+## Beginning
+Restart networking in all the tuxes:
+```bash
+systemctl restart networking
 ```
 
-## Integrate with your tools
+Restart the **switch** and the **router**:
+```
+/system reset-configuration
+``` 
 
-- [ ] [Set up project integrations](https://gitlab.up.pt/up202208319/rcom-lab2-network/-/settings/integrations)
+The user is **admin** and the password is blank.
 
-## Collaborate with your team
+## Exp 1
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+Connect eth1 of tuxY3 and tuxY4 to the switch (ether3 & ether4).
 
-## Test and Deploy
+### tuxY3
+Configure eth1 interface:
+```bash
+ifconfig eth1 up
+ifconfig eth1 172.16.Y0.1/24
+```
 
-Use the built-in continuous integration in GitLab.
+### tuxY4
+Configure eth1 interface:
+```bash
+ifconfig eth1 up
+ifconfig eth1 172.16.Y0.254/24
+```
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+## Exp 2
 
-***
+Connect eth1 of tuxY2 to the switch (ether2).
 
-# Editing this README
+### tuxY2
+Configure eth1 interface:
+```bash
+ifconfig eth1 up
+ifconfig eth1 172.16.Y1.1/24
+```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### Switch
+Remove ports from default bridge:  
+Ether2:
+```
+/interface bridge port print
+/interface bridge port remove [find interface=ether2]
+```
+Ether3:
+```
+/interface bridge port print
+/interface bridge port remove [find interface=ether3]
+```
+Ether4:
+```
+/interface bridge port print
+/interface bridge port remove [find interface=ether4]
+```
 
-## Suggestions for a good README
+Create bridges **bridgeY0** and **bridgeY1**:
+```
+/interface bridge add name=bridgeY0
+/interface bridge add name=bridgeY1
+```
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+Assuming tuxY2, tuxY3, and tuxY4 are connected to ports ether2, ether3 and ether4, respectively. Add ports to bridges:
+```
+/interface bridge port add bridge=bridgeY0 interface=ether3
+/interface bridge port add bridge=bridgeY0 interface=ether4
+/interface bridge port add bridge=bridgeY1 interface=ether2
+```
 
-## Name
-Choose a self-explaining name for your project.
+## Exp 3
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+Connect eth2 of tuxY4 to the switch (ether10).
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### tuxY4
+Configure eth2 interface:
+```bash
+ifconfig eth2 up
+ifconfig eth2 172.16.Y1.253/24
+```
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+Enable IP forwarding:
+```bash
+sysctl net.ipv4.ip_forward=1
+```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+Disable ICMP echo-ignore-broadcast:
+```bash
+sysctl net.ipv4.icmp_echo_ignore_broadcasts=0
+```
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+### Switch
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+Assuming eth2 interface of tuxY4 is connected to the switch on ether10.
+Remove ether10 from default bridge:
+```
+/interface bridge port remove [find interface=ether10]
+```
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+Add eth2 of tuxY4 to bridgeY1:
+```
+/interface bridge port add bridge=bridgeY1 interface=ether10
+```
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+### tuxY2
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+Add route to subnetwork 172.16.Y0.0/24 via eth2 of tuxY4:
+```bash
+route add -net 172.16.Y0.0/24 gw 172.16.Y1.253
+```
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+### tuxY3
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+Add route to subnetwork 172.16.Y1.0/24 via eth1 of tuxY4:
+```bash
+route add -net 172.16.Y1.0/24 gw 172.16.Y0.254
+```
 
-## License
-For open source projects, say how it is licensed.
+## Exp 4
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+**IMPORTANT: Reset router, if not done yet!!**
+
+Connect ether1 of Rc to PY.12.
+Connect ether2 of RC to the switch (ether15).
+
+### Switch
+
+Assuming ether2 of Rc is connected to the switch on ether15.
+Remove ether15 from default bridge:
+```
+/interface bridge port remove [find interface=ether15]
+```
+
+Add ether2 of Rc to bridgeY1:
+```
+/interface bridge port add bridge=bridgeY1 interface=ether15
+```
+
+### Router
+
+Configure IP addresses of Rc:
+```
+/ip address add address=172.16.1.Y1/24 interface=ether1
+/ip address add address=172.16.Y1.254/24 interface=ether2
+```
+
+### tuxY3
+
+Route to subnetwork 172.16.Y1.0/24 is already configured in Exp 3.
+
+Add route to 172.16.1.0/24:
+```bash
+route add -net 172.16.1.0/24 gw 172.16.Y0.254
+```
+
+### tuxY4
+
+Add route to 172.16.1.0/24:
+```bash
+route add -net 172.16.1.0/24 gw 172.16.Y1.254
+```
+
+### tuxY2
+
+Route to subnetwork 172.16.Y0.0/24 is already configured in Exp 3.
+
+Add route to 172.16.1.0/24:
+```bash
+route add -net 172.16.1.0/24 gw 172.16.Y1.254
+```
+
+### Router
+
+Add route to 172.16.Y0.0/24:
+```
+/ip route add dst-address=172.16.Y0.0/24 gateway=172.16.Y1.253
+```
+
+## Exp 5
+
+### tuxY2
+
+Configure the DNS (with ip address of 10.225.20.3):
+```bash
+echo nameserver 10.227.20.3 >> /etc/resolv.conf
+```
+
+### tuxY3
+
+Configure the DNS (with ip address of 10.225.20.3):
+```bash
+echo nameserver 10.227.20.3 >> /etc/resolv.conf
+```
+
+### tuxY4
+
+Configure the DNS (with ip address of 10.225.20.3):
+```bash
+echo nameserver 10.227.20.3 >> /etc/resolv.conf
+```
+
+## Exp 6
+
+Compile the download application:
+```bash
+gcc download.c -o download
+```
+
+Run the download application:
+```bash
+./download <URL>
+```
+
+This URL is in the format ftp://[\<user>:\<password>@]\<host>/\<url-path>
+
